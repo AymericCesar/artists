@@ -363,7 +363,7 @@ function loadSong(songName) {
                 "<progress class='pisteProgress' id='progress" + trackNumber + "' value='0' max='100' style='width : " + SAMPLE_HEIGHT + "px' ></progress>" +
                 instrument.name + '<div style="float : right;">' +
                 "<button class='mute' id='mute" + trackNumber + "' onclick='muteUnmuteTrack(" + trackNumber + ");'><span class='glyphicon glyphicon-volume-up'></span></button> " +
-                "<button class='solo' id='solo" + trackNumber + "' onclick='soloNosoloTrack(" + trackNumber + ");'><img src='../img/earphones.png' /></button></div>" +
+                "<button class='solo' id='solo" + trackNumber + "' onclick='soloNosoloTrack(" + trackNumber + ");'><img src='/static/img/earphones.png' /></button></div>" +
                 "<span id='volspan'><input type='range' class = 'volumeSlider custom' id='volume" + trackNumber + "' min='0' max = '100' value='100' oninput='setVolumeOfTrackDependingOnSliderValue(" + trackNumber + ");'/></span><td>";
 
             divTrack.appendChild(span);
@@ -720,12 +720,12 @@ function soloNosoloTrack(trackNumber) {
         // we were not in solo mode, let's go in solo mode
         currentTrack.solo = true;
         // Let's change the icon
-        s.innerHTML = "<img src='../img/noearphones.png' />";
+        s.innerHTML = "<img src='/static/img/noearphones.png' />";
     } else {
         // we were in solo mode, let's go to the "no solo" mode
         currentTrack.solo = false;
         // Let's change the icon
-        s.innerHTML = "<img src='../img/earphones.png' />";
+        s.innerHTML = "<img src='/static/img/earphones.png' />";
     }
 
     // In all cases we remove the mute state of the curent track
@@ -762,7 +762,7 @@ function muteUnmuteTrack(trackNumber) {
     currentTrack.solo = false;
     $(s).removeClass("activated");
     // Let's change the icon
-    s.innerHTML = "<img src='../img/earphones.png' />";
+    s.innerHTML = "<img src='/static/img/earphones.png' />";
 
     // adjust track volumes dependinf on all mute/solo states
     currentSong.setTrackVolumesDependingOnMuteSoloStatus();
