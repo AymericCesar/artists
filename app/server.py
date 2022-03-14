@@ -13,6 +13,8 @@ from flask import Flask, jsonify, render_template, request, Response, flash, red
 # from functools import wraps
 import csv
 
+os.chdir(os.path.split(os.path.realpath(__file__))[0])
+
 AUTH_INFO = ".auth_info"
 def load_auth_info():
     with open(AUTH_INFO) as fhandle:
@@ -132,4 +134,4 @@ if __name__ == '__main__':
     # MAIL = Mail(APP)
     MAIL = 0
 
-    APP.run(port=5080, host='0.0.0.0', debug=ARGS.debug)
+    APP.run(port=80, host='0.0.0.0', debug=ARGS.debug)
