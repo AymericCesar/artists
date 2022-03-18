@@ -385,8 +385,8 @@ function loadSong(songName) {
         } else {
           clearLog();
           // enable song select menu
-          var s = document.querySelector("#songSelect");
-          s.disabled = false;
+          $("#songSelect").attr("disabled", false);
+          $("#baddTrack").attr("disabled", false);
         }
     };
     xhr.send();
