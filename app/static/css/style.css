@@ -112,6 +112,11 @@ button {
     width: 42px;
 }
 
+.unstbtn {
+    height: unset;
+    width: unset;
+}
+
 #sound {
     position: absolute;
     margin-left: 28px;

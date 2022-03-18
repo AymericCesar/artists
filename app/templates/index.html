@@ -15,6 +15,7 @@
     <script src="{{ url_for('static', filename='js/sound.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery.knob.js') }}"></script>
     <script src="{{ url_for('static', filename='js/knob.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
     <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <script src="{{ url_for('static', filename='js/canvasArrows.js') }}"></script>
     <script src="{{ url_for('static', filename='js/range-touch.js') }}"></script>
@@ -27,20 +28,36 @@
   	<div id="app">
   		<div id="console">
   		  <ul class="nav nav-tabs">
-          <li ><a id="consoleTab" href="#home" data-toggle="tab">Console</a></li>
-          <li><a id="waveTab" href="#profile" data-toggle="tab">Wave</a></li>
-          <li><a class="active" href="#help" data-toggle="tab">Help</a></li>
+          <li ><a id="consoleTab" href="#home" data-toggle="tab">
+            Console</a></li>
+          <li><a class="active" id="waveTab" href="#profile" data-toggle="tab">
+            Wave</a></li>
+          <li><a class="active" id="loginTab" href="#login" data-toggle="tab"
+                 onclick="check_login();">
+            User</a></li>
+          <li><a href="#help" data-toggle="tab">
+            Help</a></li>
         </ul>
 
         <!-- Tab panes -->
         <div class="tab-content">
-          <div class="tab-pane fade in " id="home">
+          <div class="tab-pane fade in active" id="home">
             <div id="messages">Please choose a song !</div>
           </div>
-          <div class="tab-pane fade" id="profile">
+          <div class="tab-pane fade in" id="profile">
             <canvas id="waveCanvas"></canvas>
           </div>
-          <div class="tab-pane fade in active" id="help">
+          <div class="tab-pane fade in" id="login">
+            <button id="blogout" type="button" onclick="click_logout();"
+                    class="btn btn-default unstbtn logged_only">
+              <p>Log out</p>
+            </button>
+            <button id="blogin" type="button" onclick="click_login();"
+                    class="btn btn-default unstbtn logged_hide">
+              <p>Log in</p>
+            </button>
+          </div>
+          <div class="tab-pane fade in" id="help">
             <p>Version 1.0, <a href="http://miageprojet2.unice.fr/index.php?title=Intranet_de_Michel_Buffa/MT5%2C_multitrack_player_for_musicians"
               target="_blank">Documentation / Manual</a></p>
             <p><a href="https://github.com/squallooo/MT5" target="_blank">https://github.com/squallooo/MT5</a></p>
@@ -65,59 +82,70 @@
                    data-height="100" data-displayInput=false value="100">
     			</span>
 
-    			<table style="margin-left: auto; margin-right: auto;">
+    			<table style="margin-left: auto; margin-right: auto;" id="ctrlBoxes">
   			    <tr><td id="playBox">
   		        <button id="bplay" type="button" class="btn btn-default btn-lg"
                       onclick="playAllTracks(0);" disabled>
                 <span class="glyphicon glyphicon-play"></span>
               </button>
-
               <button id="bpause" onclick="pauseAllTracks();" disabled
                       type="button" class="btn btn-default btn-lg">
                 <span class="glyphicon glyphicon-pause"></span>
               </button>
-
               <button id="bstop" onclick="stopAllTracks();"  type="button"
                       class="btn btn-default btn-lg" disabled>
                 <span class="glyphicon glyphicon-stop"></span>
-              </button>
-              <button id="bstop" onclick="addNewTrackForRecord();" type="button"
-                      class="btn btn-default btn-lg" disabled>
-                <span class="glyphicon glyphicon-record"></span>
               </button>
               <button id="brecordMix" onclick="toggleRecordMix();"type="button"
                       class="btn btn-default btn-lg" style="font-size: 10px;
                       padding: 0;" disabled>
                 Record mix
               </button>
+              <input id="iaddTrack" type="file" name="tracks" multiple
+                     onchange="updatedTracks()"/ style="display: none;">
+              <button id="baddTrack" onclick="addNewTrack();" type="button"
+                      class="btn btn-default btn-lg logged_only" disabled>
+                <span class="glyphicon glyphicon-record"></span>
+              </button>
   			    </td></tr>
-  			    <tr><td id="loopBox">
+  			    <tr><td id="loopBox" class="logged_hide">
 			        <button id="loopStart" onclick="setLoopStart();" type="button"
                       class="btn btn-default btn-lg" style="font-size: 10px;
                       padding: 0;" disabled>
                 Start Loop
               </button>
-
               <button id="loopEnd"  onclick="setLoopEnd();" type="button"
                       class="btn btn-default btn-lg" style="font-size: 10px;
                       padding: 0;" disabled>
                 End loop
               </button>
-
               <button id="loopReset"  onclick="resetSelection();" type="button"
                       class="btn btn-default btn-lg" style="font-size: 10px;
                       padding: 0;" disabled>
                 Reset loop
               </button>
-
               <button onclick="loopOnOff();" id="loopOnOff" type="button"
                       class="btn btn-default btn-lg" disabled>
                 <span class="glyphicon glyphicon-repeat"></span>
               </button>
   			    </td></tr>
+            <tr class="logged_only", style="display: none;">
+              <td id="newSongBox">
+              <input id="newSong" class="styled-input"></input>
+              <button onclick="send_new_song();" id="sendNSong" type="button"
+                      class="btn btn-default btn-lg">
+                <span class="glyphicon glyphicon-ok"></span>
+              </button>
+            </td></tr>
   			    <tr><td id="songBox">
-  			        <div id="songs" class="styled-select"></div>
-  			        <br/>
+  			        <div id="songs" class="styled-select"
+                     style="display: inline-block; height: 42px;">
+                </div>
+                <button onclick="del_song();" id="delSong" type="button"
+                class="btn btn-default btn-lg logged_only"
+                style="display: none; vertical-align: top">
+                  <span class="glyphicon glyphicon-remove"></span>
+                </button>
   			    </td></tr>
     			</table>
     		</div>

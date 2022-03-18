@@ -90,6 +90,7 @@ function init() {
     loadSongList();
 
     animateTime();
+    check_login();
 }
 
 function log(message) {
@@ -352,34 +353,41 @@ function loadSong(songName) {
         // resize canvas depending on number of samples
         resizeSampleCanvas(song.instruments.length);
 
-        // for eah instrument/track in the song
-        song.instruments.forEach(function (instrument, trackNumber) {
-            // Let's add a new track to the current song for this instrument
-            currentSong.addTrack(instrument);
+        if (song.instruments.length > 0) {
+          // for eah instrument/track in the song
+          song.instruments.forEach(function (instrument, trackNumber) {
+              // Let's add a new track to the current song for this instrument
+              currentSong.addTrack(instrument);
 
-            // Render HTMl
-            var span = document.createElement('tr');
-            span.innerHTML = '<td class="trackBox" style="height : ' + SAMPLE_HEIGHT + 'px">' +
-                "<progress class='pisteProgress' id='progress" + trackNumber + "' value='0' max='100' style='width : " + SAMPLE_HEIGHT + "px' ></progress>" +
-                instrument.name + '<div style="float : right;">' +
-                "<button class='mute' id='mute" + trackNumber + "' onclick='muteUnmuteTrack(" + trackNumber + ");'><span class='glyphicon glyphicon-volume-up'></span></button> " +
-                "<button class='solo' id='solo" + trackNumber + "' onclick='soloNosoloTrack(" + trackNumber + ");'><img src='/static/img/earphones.png' /></button></div>" +
-                "<span id='volspan'><input type='range' class = 'volumeSlider custom' id='volume" + trackNumber + "' min='0' max = '100' value='100' oninput='setVolumeOfTrackDependingOnSliderValue(" + trackNumber + ");'/></span><td>";
+              // Render HTMl
+              var span = document.createElement('tr');
+              span.innerHTML = '<td class="trackBox" style="height : ' + SAMPLE_HEIGHT + 'px">' +
+                  "<progress class='pisteProgress' id='progress" + trackNumber + "' value='0' max='100' style='width : " + SAMPLE_HEIGHT + "px' ></progress>" +
+                  instrument.name + '<div style="float : right;">' +
+                  "<button class='mute' id='mute" + trackNumber + "' onclick='muteUnmuteTrack(" + trackNumber + ");'><span class='glyphicon glyphicon-volume-up'></span></button> " +
+                  "<button class='solo' id='solo" + trackNumber + "' onclick='soloNosoloTrack(" + trackNumber + ");'><img src='/static/img/earphones.png' /></button></div>" +
+                  "<span id='volspan'><input type='range' class = 'volumeSlider custom' id='volume" + trackNumber + "' min='0' max = '100' value='100' oninput='setVolumeOfTrackDependingOnSliderValue(" + trackNumber + ");'/></span><td>";
 
-            divTrack.appendChild(span);
+              divTrack.appendChild(span);
 
-        });
+          });
 
-        // Add range listeners, from range-input.js
-        addRangeListeners();
+          // Add range listeners, from range-input.js
+          addRangeListeners();
 
 
-        // disable all mute/solo buttons
-        $(".mute").attr("disabled", true);
-        $(".solo").attr("disabled", true);
+          // disable all mute/solo buttons
+          $(".mute").attr("disabled", true);
+          $(".solo").attr("disabled", true);
 
-        // Loads all samples for the currentSong
-        loadAllSoundSamples();
+          // Loads all samples for the currentSong
+          loadAllSoundSamples();
+        } else {
+          clearLog();
+          // enable song select menu
+          var s = document.querySelector("#songSelect");
+          s.disabled = false;
+        }
     };
     xhr.send();
 }
