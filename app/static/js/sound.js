@@ -261,6 +261,7 @@ function finishedLoading(bufferList) {
 
     buttonPlay.disabled = false;
     buttonRecordMix.disabled = false;
+    $("#baddTrack").attr("disabled", false);
 
     //enabling the loop buttons
     $('#loopBox > button').each(function (key, item) {
