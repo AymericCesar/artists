@@ -192,7 +192,7 @@
       this.relative = (this.relativeWidth || this.relativeHeight);
 
       // wraps all elements in a div
-      this.$div = $('<div class="knobDiv" style="' + (this.o.inline ? 'display:inline;' : '') + '"></div>');
+      this.$div = $('<div class="knobDiv"></div>');
 
       this.$.wrap(this.$div).before(this.$c);
       this.$div = this.$.parent();

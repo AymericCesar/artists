@@ -94,16 +94,10 @@ function init() {
 }
 
 function log(message) {
-    // Be sure that the console is visible
-    View.activeConsoleTab();
-    $('#messages').append(message + "<br/>");
-    $('#messages').animate({
-        scrollTop: $('#messages').prop("scrollHeight")
-    }, 500);
+    console.log(message);
 }
 
 function clearLog() {
-    $('#messages').empty();
 }
 
 function existsSelection() {
@@ -305,7 +299,6 @@ function loadSongList() {
             // different than the one chosen
             if ((currentSong === undefined) || ((currentSong !== undefined) && (songName !== currentSong.name))) {
                 loadSong(songName);
-                View.activeConsoleTab();
             }
         }
     });
@@ -320,6 +313,7 @@ function loadSongList() {
             }).appendTo(s);
         }
 
+        songList.sort()
         songList.forEach(function (songName) {
             console.log(songName);
 
@@ -355,6 +349,9 @@ function loadSong(songName) {
         resizeSampleCanvas(song.instruments.length);
 
         if (song.instruments.length > 0) {
+          song.instruments.sort(function (a, b) {
+            return a.name.localeCompare(b.name);
+          });
           // for eah instrument/track in the song
           song.instruments.forEach(function (instrument, trackNumber) {
               // Let's add a new track to the current song for this instrument
@@ -513,18 +510,6 @@ function animateTime() {
 
 function showWelcomeMessage() {
     View.frontCanvasContext.save();
-    View.frontCanvasContext.font = '14pt Arial';
-    View.frontCanvasContext.fillStyle = 'white';
-    View.frontCanvasContext.fillText('Welcome to MT5, start by choosing a song ', 50, 200);
-    View.frontCanvasContext.fillText('in this drop down menu! ', 50, 220);
-    View.frontCanvasContext.fillText('Documentation and HowTo in the ', 315, 100);
-    View.frontCanvasContext.fillText('first link of the Help tab there! ', 315, 120);
-
-    // Draws an arrow in direction of the drop down menu
-    // x1, y1, x2, y2, width of arrow, color
-    drawArrow(View.frontCanvasContext, 180, 170, 10, 10, 10, 'lightGreen');
-    drawArrow(View.frontCanvasContext, 450, 80, 450, 10, 10, 'lightGreen');
-
     View.frontCanvasContext.restore();
 }
 
@@ -541,60 +526,6 @@ function drawSelection() {
 
 
 function drawFrequencies() {
-    View.waveCanvasContext.save();
-    //View.waveCanvasContext.clearRect(0, 0, View.waveCanvas.width, View.waveCanvas.height);
-    View.waveCanvasContext.fillStyle = "rgba(0, 0, 0, 0.05)";
-    View.waveCanvasContext.fillRect(0, 0, View.waveCanvas.width, View.waveCanvas.height);
-
-    var freqByteData = new Uint8Array(currentSong.analyserNode.frequencyBinCount);
-    currentSong.analyserNode.getByteFrequencyData(freqByteData);
-    var nbFreq = freqByteData.length;
-
-    var SPACER_WIDTH = 5;
-    var BAR_WIDTH = 2;
-    var OFFSET = 100;
-    var CUTOFF = 23;
-    var HALF_HEIGHT = View.waveCanvas.height / 2;
-    var numBars = 1.7 * Math.round(View.waveCanvas.width / SPACER_WIDTH);
-
-    View.waveCanvasContext.lineCap = 'round';
-
-    for (var i = 0; i < numBars; ++i) {
-        var magnitude = 0.3 * freqByteData[Math.round((i * nbFreq) / numBars)];
-
-        View.waveCanvasContext.fillStyle = "hsl( " + Math.round((i * 360) / numBars) + ", 100%, 50%)";
-        View.waveCanvasContext.fillRect(i * SPACER_WIDTH, HALF_HEIGHT, BAR_WIDTH, -magnitude);
-        View.waveCanvasContext.fillRect(i * SPACER_WIDTH, HALF_HEIGHT, BAR_WIDTH, magnitude);
-
-    }
-
-    // Draw animated white lines top
-    View.waveCanvasContext.strokeStyle = "white";
-    View.waveCanvasContext.beginPath();
-
-    for (var i = 0; i < numBars; ++i) {
-        var magnitude = 0.3 * freqByteData[Math.round((i * nbFreq) / numBars)];
-        if (i > 0) {
-            //console.log("line lineTo "  + i*SPACER_WIDTH + ", " + -magnitude);
-            View.waveCanvasContext.lineTo(i * SPACER_WIDTH, HALF_HEIGHT - magnitude);
-        } else {
-            //console.log("line moveto "  + i*SPACER_WIDTH + ", " + -magnitude);
-            View.waveCanvasContext.moveTo(i * SPACER_WIDTH, HALF_HEIGHT - magnitude);
-        }
-    }
-    for (var i = 0; i < numBars; ++i) {
-        var magnitude = 0.3 * freqByteData[Math.round((i * nbFreq) / numBars)];
-        if (i > 0) {
-            //console.log("line lineTo "  + i*SPACER_WIDTH + ", " + -magnitude);
-            View.waveCanvasContext.lineTo(i * SPACER_WIDTH, HALF_HEIGHT + magnitude);
-        } else {
-            //console.log("line moveto "  + i*SPACER_WIDTH + ", " + -magnitude);
-            View.waveCanvasContext.moveTo(i * SPACER_WIDTH, HALF_HEIGHT + magnitude);
-        }
-    }
-    View.waveCanvasContext.stroke();
-
-    View.waveCanvasContext.restore();
 }
 
 function drawSampleImage(imageURL, trackNumber, trackName) {
@@ -619,6 +550,8 @@ function drawSampleImage(imageURL, trackNumber, trackName) {
 function resizeSampleCanvas(numTracks) {
     window.View.masterCanvas.height = SAMPLE_HEIGHT * numTracks;
     window.View.frontCanvas.height = window.View.masterCanvas.height;
+    window.View.masterCanvas.width = $("#app").width() - $("#trackControl").width() - 2;
+    window.View.frontCanvas.width = window.View.masterCanvas.width;
 }
 
 function clearAllSampleDrawings() {
@@ -658,8 +591,6 @@ function playAllTracks(startTime) {
     // Note : we memorise the current time, context.currentTime always
     // goes forward, it's a high precision timer
     lastTime = context.currentTime;
-
-    View.activeWaveTab();
 }
 
 function setVolumeOfTrackDependingOnSliderValue(nbTrack) {
