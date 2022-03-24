@@ -73,6 +73,18 @@ function del_song() {
   }
 }
 
+function delTrack(trackName) {
+  var name = $("#songSelect").val();
+  console.log("removing", trackName, name);
+  if (name != "nochoice" && confirm("Are you sure you want to remove " + trackName +
+              "? This action cannot be canceled.")) {
+    $.post("/del_track", {name: name, trackName: trackName}).done(function(data) {
+      console.log(data);
+      loadSong($("#songSelect").val());
+    });
+  }
+}
+
 function addNewTrack() {
   $("#iaddTrack").click();
 }

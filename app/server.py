@@ -175,6 +175,28 @@ def add_track():
     print("out")
     return jsonify(answer)
 
+@APP.route('/del_track', methods = ['POST'])
+@auth.login_required
+def del_track():
+    name = request.form["name"]
+    trackName = request.form["trackName"]
+    songList = get_dirs(TRACKS_PATH)
+    answer = {
+        "status": "OK",
+        "message": "Track deleted"
+    }
+    if name not in songList:
+        answer["status"] = "KO"
+        answer["message"] = "Song does not exist"
+        return jsonify(answer)
+    trackList = get_files(TRACKS_PATH + '/' + name)
+    if trackName not in trackList:
+        answer["status"] = "KO"
+        answer["message"] = "Track does not exist"
+        return jsonify(answer)
+    os.remove(os.path.join(TRACKS_PATH, name, trackName))
+    return jsonify(answer)
+
 if __name__ == '__main__':
     PARSER = argparse.ArgumentParser(
         description="neld_artists_webapp"

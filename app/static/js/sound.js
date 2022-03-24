@@ -365,6 +365,7 @@ function loadSong(songName) {
               span.innerHTML = '<td class="trackBox" style="height : ' + SAMPLE_HEIGHT + 'px">' +
                   "<progress class='pisteProgress' id='progress" + trackNumber + "' value='0' max='100' style='width : " + SAMPLE_HEIGHT + "px' ></progress>" +
                   instrument.name + '<div style="float : right;">' +
+                  "<button class='logged_only' id='del" + trackNumber + "' onclick='delTrack(\"" + instrument.sound + "\");'><span class='glyphicon glyphicon-remove'></span></button> " +
                   "<button class='mute' id='mute" + trackNumber + "' onclick='muteUnmuteTrack(" + trackNumber + ");'><span class='glyphicon glyphicon-volume-up'></span></button> " +
                   "<button class='solo' id='solo" + trackNumber + "' onclick='soloNosoloTrack(" + trackNumber + ");'><img src='/static/img/earphones.png' /></button></div>" +
                   "<span id='volspan'><input type='range' class = 'volumeSlider custom' id='volume" + trackNumber + "' min='0' max = '100' value='100' oninput='setVolumeOfTrackDependingOnSliderValue(" + trackNumber + ");'/></span><td>";
